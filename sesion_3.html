@@ -4,7 +4,7 @@
     <title>Capacitación en R y herramientas de productividad</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2020-11-03" />
+    <meta name="date" content="2020-11-04" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -488,7 +488,7 @@ background-position: 100% 0%
   
 ## Uso de condicionales: `case_when()`
 
-Un pequeño ejercicio: -- utilizando la base de la ene, genere las siguientes 
+Un pequeño ejercicio: utilizando la base de la ene, genere las siguientes 
 variables, siguiendo el orden de las instrucciones:
 
 - **tramos1**: asígnele el valor 1 si la edad es menor que 15, el valor 2 si 
@@ -945,6 +945,589 @@ ene %&gt;%
 ## 10    10     2
 ## 11    NA  3117
 ```
+
+---
+
+background-image: url("https://www.openscapes.org/img/blog/tidydata/tidydata_1.jpg")
+background-size: 100% 100%
+class: center, bottom, inverse
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+Es una forma de describir datos que están organizados con una estructura 
+particular, una estructura rectangular.
+
+--
+
+Es importante tener en consideración tres principios:
+
+--
+
+- Cada columna es una variable.
+
+--
+
+- Cada fila es una observación.
+
+--
+
+- Cada celda es un valor, o sea, la intersección entre una fila y una columna, 
+entre variable y observación.
+
+---
+
+background-image: url("https://www.openscapes.org/img/blog/tidydata/tidydata_2.jpg")
+background-size: 100% 100%
+class: center, bottom, inverse
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+Algunas características de estas datas son:
+
+- Más eficiente para la ciencia de datos.
+
+- Facilitan la colaboración.
+
+- Mejoran la reproducibilidad.
+
+--
+
+El universo de **`tidyverse`** cuenta con un paquete llamado **`tidyr`**, el 
+que cuenta con funciones para trabajar con **tidy data**.
+
+--
+
+.center[
+&lt;img src="imagenes/tidyr.png" width="200" /&gt;
+]
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+.pull-left[
+
+
+En esta sesión veremos dos funciones del paquete **tidyr**:
+
+- **`pivot_wider()`**
+
+Equivale a transponer un dataframe a formato horizontal.
+
+- **`pivot_longer()`**
+
+Equivale a transponer un dataframe a formato vertical.
+
+]
+
+.pull-right[
+
+&lt;img src="imagenes/wide-long.png" width="250" /&gt;
+
+]
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+## Función `pivot_wider()`
+
+Esta función se utiliza para ordenar un dataframe de forma tal de mostrar 
+categorías de una variable como columnas de un dataframe.
+
+--
+
+Incrementa el número de las columnas y disminuye el número de las filas.
+
+--
+
+Es útil para la presentación de cuadros de resumen con doble entrada.
+
+--
+
+Por ejemplo...
+
+--
+
+
+```r
+library(tidyr)
+ene %&gt;%
+  group_by(region, b1) %&gt;%
+  summarise(n = n()) %&gt;%
+  pivot_wider(names_from = b1,
+              names_prefix = "x" ,
+              values_from = n)
+```
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+## Función `pivot_wider()`
+
+
+```
+## # A tibble: 16 x 12
+## # Groups:   region [16]
+##    region    x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   xNA
+##     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1      1    42   143   168    97   327    48   191   130   172    29  1729
+##  2      2    46   204   206    89   313     9   223   201   189     1  1809
+##  3      3    24   114   184    64   312    26   164   142   220    NA  1590
+##  4      4    37   196   245    69   602   196   292   222   687     1  3259
+##  5      5   125   663   720   216  1232   180   675   459  1118    32  6997
+##  6      6    41   226   246    95   498   111   285   208   838     2  3117
+##  7      7    35   205   252    96   605   190   340   243   974     4  3535
+##  8      8    61   433   479   171   890   150   552   338   838    16  5874
+##  9      9    38   237   220    60   445   293   268   136   489     7  2983
+## 10     10    60   285   273   163   619   376   413   256   809    23  4140
+## 11     11    37   158   184    51   314    95   206   106   279    11  1365
+## 12     12    71   163   161    62   211    33   135    89   133    43  1044
+## 13     13   409  1432  1230   522  1957   124  1032   680  1658    16 10491
+## 14     14    23   187   155    47   296   165   208   137   377     5  1879
+## 15     15    30   154   140    83   355   138   136   129   338    13  1960
+## 16     16    20   144   131    30   239    69   174    91   302     1  1612
+```
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+## Función `pivot_longer()`
+
+Esta función incrementa el número de filas y disminuye el número de columnas.
+
+--
+
+Los dataframes obtenidos por esta función son más fáciles de manipular y de 
+comparar, pero no de analizar.
+
+--
+
+Esta función se puede considerar como la opuesta a `pivot_wider()`.
+
+--
+
+Ejemplo de `pivot_longer()`:
+
+--
+
+
+```r
+df1 &lt;- data.frame(region = c(1, 2),
+                  hombres = c(100, 200),
+                  mujeres = c(50, 300))
+```
+
+
+```r
+df1 %&gt;%
+  pivot_longer(cols = -region , names_to = "sexo", values_to = "total_sexo")
+```
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+## Función `pivot_longer()`
+
+
+```
+## # A tibble: 4 x 3
+##   region sexo    total_sexo
+##    &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
+## 1      1 hombres        100
+## 2      1 mujeres         50
+## 3      2 hombres        200
+## 4      2 mujeres        300
+```
+
+Los argumentos más comunes de esta función son:
+
+--
+
+- El primer argumento es el dataframe sobre el cual se aplicará la función.
+
+--
+
+- El segundo argumento define a las columnas dentro del dataframe que se le 
+aplicará la acción.
+
+--
+
+- El tercer argumento (*names_to*), indica el nombre de la variable que será 
+creada para "guardar" los nombres de las categorías.
+
+--
+
+- El cuarto argumento (*values_to*), indica el nombre de la variable que será 
+creada para "guardar" los valores asociados a las categorías.
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+## Pequeño ejercicio
+
+Utilizando la base *ene*, cálcule el número de registros según grupo 
+ocupacional (b1), por mes de encuestaje (mes_encuesta).
+
+Presente el resultado como un cuadro de resumen, con los grupos ocupacionales 
+en las filas y los meses de encuestaje en las columnas.
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Tidy data
+
+## Pequeño ejercicio
+
+
+```r
+ene %&gt;%
+  group_by(b1, mes_encuesta) %&gt;%
+  summarise(n = n()) %&gt;%
+  pivot_wider(names_from = mes_encuesta,
+              names_prefix = "mes_",
+              values_from = n)
+```
+
+```
+## # A tibble: 11 x 4
+## # Groups:   b1 [11]
+##       b1 mes_10 mes_11 mes_12
+##    &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+##  1     1    314    374    411
+##  2     2   1359   1752   1833
+##  3     3   1442   1743   1809
+##  4     4    580    649    686
+##  5     5   2787   3113   3315
+##  6     6    714    770    719
+##  7     7   1683   1788   1823
+##  8     8    993   1280   1294
+##  9     9   2663   3246   3512
+## 10    10     53     67     84
+## 11    NA  15990  18478  18916
+```
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Bonus
+
+Antes de terminar, veremos una pizca sobre el uso de expresiones regulares con 
+la función `filter()`.
+
+--
+
+En la sesión anterior surgió la duda sobre si es posible filtrar registros 
+según características de los valores de una variable, por ejemplo:
+
+- Filtrar todos aquellos registros que comienzan con la letra "x".
+
+- Filtrar todos aquellos registros que terminan con "z".
+
+--
+
+Para lo anterior existen las expresiones regulares (**regex**).
+
+--
+
+Una expresión regular es una secuencia de caracteres que conforma un patrón 
+de búsqueda (*wikipedia*).
+
+--
+
+Las regex resultan útiles porque permiten describir patrones en ellas a través 
+de un lenguaje conciso.
+
+--
+
+**Importante**: cuando veas por primera vez una regex, te parecerá que un gato 
+caminó sobre tu teclado.
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Bonus
+
+Los tipos de datos con los que trabajaremos estás regex son datos de tipo 
+**string**.
+
+--
+
+El paquete que utilizaremos se llama **`stringr`**, y forma parte del universo 
+de **`tidyverse`**.
+
+--
+
+Todas las funciones de **`stringr`**, comienzan con el prefijo "**str_**".
+
+--
+
+Para nuestro objetivo, utilizaremos la función `str_detect()`
+
+--
+
+Los argumentos que utiliza esta función son:
+
+--
+
+- La string sobre la cuál se aplicará la función.
+
+--
+
+- El patrón que se buscará (aquí se utilizan las regex).
+
+--
+
+Para más información sobre **regex** puede revisar 
+[`aqui`](https://www.diegocalvo.es/expresiones-regulares-en-r/), 
+[`aqui`](https://rpubs.com/ydmarinb/429756) y 
+[`aqui`](https://stringr.tidyverse.org/articles/regular-expressions.html), 
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Bonus
+
+Ejemplo 1: utilizando la base de guaguas, obtener los tres nombres más 
+repetidos cuyo nombre comience con la letra z.
+
+
+```r
+library(stringr)
+guaguas %&gt;%
+  filter(str_detect(nombre, "^Z")) %&gt;%
+  group_by(nombre) %&gt;%
+  summarise(total = sum(n)) %&gt;%
+  arrange(desc(total)) %&gt;%
+  slice(1:3)
+```
+
+```
+## # A tibble: 3 x 2
+##   nombre  total
+##   &lt;chr&gt;   &lt;int&gt;
+## 1 Zoila    7204
+## 2 Zunilda  7028
+## 3 Zulema   6248
+```
+
+--
+
+Algunos operadores importantes a conocer son:
+
+- **`^a`**: se utiliza para indicar que la cadena inicia con "a".
+
+- **`a$`**: se utiliza para indicar que la cadena termina con "a".
+
+- **`a*`**: se utiliza para indicar que la cadena posee "a", cero o más veces.
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Bonus
+
+Ejemplo 2: utilizando la base de guaguas, obtener los nombres que comiencen 
+con la letra "I" y terminen con la letra "o".
+
+
+```r
+library(stringr)
+guaguas %&gt;%
+  filter(str_detect(nombre, "^I.*o$")) %&gt;%
+  group_by(nombre) %&gt;%
+  summarise(total = sum(n)) %&gt;%
+  arrange(desc(total))
+```
+
+```
+## # A tibble: 8 x 2
+##   nombre    total
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 Ignacio   66672
+## 2 Isidro     1949
+## 3 Isidoro    1550
+## 4 Ivo        1090
+## 5 Italo       399
+## 6 Iñigo       287
+## 7 Ildefonso    83
+## 8 Irenio       16
+```
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Bonus
+
+La función `str_detect()` también se puede usar con `case_when()`.
+
+- Utilice la base guaguas.
+
+- Filtre los registros de mujeres (sexo == "F") del año de su nacimiento.
+
+- Genere una variable que indique si el nombre termina con a ("a$"), o no.
+
+- Obtenga el número de nombres que terminan con a y cuantos que no.
+
+
+```r
+guaguas %&gt;%
+  filter(sexo == "F" &amp; anio == 1990) %&gt;%
+  mutate(termina_a = case_when(str_detect(nombre, "a$") ~ 1,
+                               TRUE ~ 0)) %&gt;%
+  group_by(termina_a) %&gt;%
+  summarise(n = n())
+```
+
+```
+## # A tibble: 2 x 2
+##   termina_a     n
+##       &lt;dbl&gt; &lt;int&gt;
+## 1         0   321
+## 2         1   341
+```
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Ejercicio final
+
+
+...los veremos en R.
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Ejercicios para la 🏠
+
+- Importar la base **ene-2019-11.csv**. Las siguientes tareas realicelas sobre 
+la base ene.
+
+- Generar un cuadro de resumen que muestre en las filas la categoría de rama 
+de actividad económica (**b14_rev4cl_canes**) y en las columnas los grupos 
+ocupacionales (**b1**).
+
+- Cree las siguientes variables:
+
+    - **pet**: que tome valor 1 si edad es mayor o igual a 15, y 0 en otro 
+    caso.
+    
+    - **ocu**: que tome el valor 1 si la variable cae_especifico se encuentra 
+    en el rango (extremos incluidos) entre 1 y 7, y que tome el valor 0 en 
+    cualquier otro caso.
+    
+- Genere un cuadro de resumen agrupado por región que muestre el total de 
+la variable **pet** y el total de la variable **ocu**.
+
+- Sobre el cuadro de resumen del punto anterior, cree la variable **to**, 
+que tomará el valor de: total de ocu / total de pet * 100
+
+(De esta forma se obtiene la tasa de ocupación, pero no será equivalente a 
+la oficial pues no se están considerando los factores de expansión.)
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Referencias
+
+Nada de esto sería posible sin:
+
+- [`R fot Data Science, de Hadley Wickham`](https://r4ds.had.co.nz/)
+
+- [`Advanced R, de Hadley Wickham`](http://adv-r.had.co.nz/Introduction.html)
+
+- [`Data wrangling, exploration, and analysis with R, de Jenny Bryan`](https://stat545.com/index.html)
+
+- [`Introduction to R, de Data Carpentry`](https://datacarpentry.org/R-genomics/01-intro-to-R.html#functions)
+
+- [`Xaringan: Presentation Ninja, de Yihui Xie`](https://github.com/yihui/xaringan). Para generar esta presentación con la planilla ninja ⚔
+
+R for Data Science tiene una traducción al español realizada por la comunidad hisp
+ana de R:
+
+- [`R para ciencia de datos, de Hadley Wickham`](https://es.r4ds.hadley.nz/)
+
+---
+
+class: center, middle
+
+.linea-superior[]
+.linea-inferior[]
+
+&lt;img src="imagenes/logo_portada2.png" width="200" /&gt;
+
+## Capacitación en R y herramientas de productividad
+
+## Proyecto Estratégico Servicios Compartidos para la Producción Estadística
+
+## Procesamiento de bases de datos (2)
+
+### Noviembre 2020
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
