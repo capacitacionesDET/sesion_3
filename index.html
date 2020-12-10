@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Capacitación en R y herramientas de productividad</title>
+    <title>Capacitación en R</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2020-11-04" />
+    <meta name="date" content="2020-12-10" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -18,13 +18,11 @@ class: center, middle
 
 &lt;img src="imagenes/logo_portada2.png" width="200" /&gt;
 
-## Capacitación en R y herramientas de productividad
-
-## Proyecto Estratégico Servicios Compartidos para la Producción Estadística
+## Capacitación en R
 
 ## Procesamiento de bases de datos (2)
 
-### Noviembre 2020
+### Diciembre 2020
 
 
 
@@ -174,6 +172,15 @@ luego ordenarla de manera descendente según el número de caracteres de x2.
 
 ```r
 library(dplyr)
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.6.3
+```
+
+```r
+df$x2&lt;-as.character(df$x2)
+
 df %&gt;%
   mutate(n = nchar(x2)) %&gt;% # nchar(), función utilizada para contar caracteres
   filter(n &gt; 5) %&gt;%
@@ -448,7 +455,7 @@ condición 2.
 "valor_2".
 
 - En caso que cond_1 sea falsa, y cond_2 sea falsa, se asignará un valor 
-"missing" a "nv".
+"missing" (`NA`) a "nv".
 
 ---
 
@@ -478,6 +485,10 @@ y el valor a asignar.
 
 - Los valores a asignar deben ser de la misma clase.
 
+--
+
+¿Como se hace esa "colita de chancho"? `AltGr` + `+` = `~`
+
 ---
 
 background-image: url("imagenes/fondo2.PNG")
@@ -488,7 +499,9 @@ background-position: 100% 0%
   
 ## Uso de condicionales: `case_when()`
 
-Un pequeño ejercicio: utilizando la base de la ene, genere las siguientes 
+Un pequeño ejercicio: 
+
+Utilizando la base de la ene (la misma de la sesión anterior), genere las siguientes dos
 variables, siguiendo el orden de las instrucciones:
 
 - **tramos1**: asígnele el valor 1 si la edad es menor que 15, el valor 2 si 
@@ -641,24 +654,61 @@ Ejemplo: obtener el número de registros de hombres y el de mujeres.
 
 
 ```r
-ene &lt;- ene %&gt;%
+## Como resultado
+ene %&gt;%
   group_by(sexo) %&gt;%
-  mutate(n_sexo = n())
+  count()
 ```
+
+```
+## # A tibble: 2 x 2
+## # Groups:   sexo [2]
+##    sexo     n
+##   &lt;int&gt; &lt;int&gt;
+## 1     1 46064
+## 2     2 50176
+```
+
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Transformación de datos (2)
 
 --
 
+Lo anterior es como haber aplicado un `table()`
+
 
 ```r
-table(ene$sexo, useNA = "always")
+table(ene$sexo,useNA = "ifany")
 ```
 
 ```
 ## 
-##     1     2  &lt;NA&gt; 
-## 46064 50176     0
+##     1     2 
+## 46064 50176
+```
+Pero nos puede interesar crear una nueva variable a partir del agrupamiento. Por ejemplo:
+
+
+```r
+ene&lt;-ene %&gt;%
+  group_by(sexo) %&gt;%
+  mutate(n_sexo=n())
 ```
 
+--
+
+Se crea una variable con dos valores: **46064** para todas las mujeres y **50176** para todos los hombres.
+
+--
+
+El resultado lo podemos ver a continuación...
+ 
 ---
 
 background-image: url("imagenes/fondo2.PNG")
@@ -673,7 +723,7 @@ Número de hombres
 
 
 ```r
-head(ene %&gt;% filter(sexo == 1) %&gt;% select(idrph, sexo, n_sexo), n = 3)
+ene %&gt;% filter(sexo == 1) %&gt;% select(idrph, sexo, n_sexo) %&gt;% head(3)
 ```
 
 ```
@@ -692,7 +742,7 @@ Número de mujeres
 
 
 ```r
-head(ene %&gt;% filter(sexo == 2) %&gt;% select(idrph, sexo, n_sexo), n = 3)
+ene %&gt;% filter(sexo == 2) %&gt;% select(idrph, sexo, n_sexo) %&gt;% head(3)
 ```
 
 ```
@@ -727,21 +777,27 @@ todos los tiempos
 
 ```r
 library(guaguas)
-head(
-guaguas %&gt;%
-  group_by(nombre) %&gt;%
-  mutate(total = sum(n)) %&gt;%
-  arrange(desc(total)),
-n = 1
-)
 ```
 
 ```
-## # A tibble: 1 x 6
+## Warning: package 'guaguas' was built under R version 3.6.3
+```
+
+```r
+guaguas %&gt;%
+  group_by(nombre) %&gt;%
+  mutate(total = sum(n)) %&gt;%
+  arrange(desc(total)) %&gt;% 
+  head(1) %&gt;% 
+  select(sexo,nombre,total)
+```
+
+```
+## # A tibble: 1 x 3
 ## # Groups:   nombre [1]
-##    anio sexo  nombre     n proporcion  total
-##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;  &lt;int&gt;
-## 1  1920 F     María   2128      0.105 959108
+##   sexo  nombre  total
+##   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
+## 1 F     María  959108
 ```
 
 ---
@@ -753,11 +809,6 @@ background-position: 100% 0%
 # Transformación de datos (2)
 
 ## Agrupación de unidades
-
-Si queremos realizar una agrupación posterior a una agrupación previa, es 
-necesario "desagrupar" la agrupación previa, esto se realiza con `ungroup()`.
-
---
 
 - Función auxiliar **`slice()`**
 
@@ -788,11 +839,11 @@ background-position: 100% 0%
 
 ```r
 # Ejemplo: utilizando la base guaguas, obtener el nombre más repetido por año.
-guaguas %&gt;%
-  group_by(anio) %&gt;%
-  arrange(desc(n)) %&gt;%
-  slice(1) %&gt;%
-  arrange(desc(anio))
+guaguas %&gt;%   ## La base de datos
+  arrange(desc(n)) %&gt;%  ## Ordenamos la base de mayor a menor
+    group_by(anio) %&gt;%  ## Agrupamos por año
+     slice(1) %&gt;% ## Dentro de cada año, tomamos el primer registro
+  arrange(desc(anio)) ## El resultado se ordena desde el año más reciente.
 ```
 
 ```
@@ -1485,8 +1536,7 @@ la variable **pet** y el total de la variable **ocu**.
 que tomará el valor de: total de ocu / total de pet * 100
 
 (De esta forma se obtiene la tasa de ocupación, pero no será equivalente a 
-la oficial pues no se están considerando los factores de expansión.)
-
+la oficial pues no se están considerando los factores de expansión.).
 ---
 
 background-image: url("imagenes/fondo2.PNG")
@@ -1521,13 +1571,11 @@ class: center, middle
 
 &lt;img src="imagenes/logo_portada2.png" width="200" /&gt;
 
-## Capacitación en R y herramientas de productividad
-
-## Proyecto Estratégico Servicios Compartidos para la Producción Estadística
+## Capacitación en R
 
 ## Procesamiento de bases de datos (2)
 
-### Noviembre 2020
+### Diciembre 2020
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

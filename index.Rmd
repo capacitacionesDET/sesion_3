@@ -1,34 +1,40 @@
-<!DOCTYPE html>
-<html lang="" xml:lang="">
-  <head>
-    <title>Capacitación en R y herramientas de productividad</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="" />
-    <meta name="date" content="2020-11-04" />
-    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
-  </head>
-  <body>
-    <textarea id="source">
-
+---
+title: "Capacitación en R"
+subtitle: "Sesión 3"
+author: 
+date: '`r Sys.Date()`'
+output:
+  xaringan::moon_reader:
+    seal: false
+    #lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: False
+---
 
 class: center, middle
 
 .linea-superior[]
 .linea-inferior[]
 
-&lt;img src="imagenes/logo_portada2.png" width="200" /&gt;
+<img src="imagenes/logo_portada2.png" width="200" />
 
-## Capacitación en R y herramientas de productividad
-
-## Proyecto Estratégico Servicios Compartidos para la Producción Estadística
+## Capacitación en R
 
 ## Procesamiento de bases de datos (2)
 
-### Noviembre 2020
+### Diciembre 2020
 
+```{r setup, include=FALSE}
+options(htmltools.dir.version = TRUE)
+knitr::opts_chunk$set(message = FALSE) 
+```
 
-
-
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+```
 
 ---
 
@@ -105,7 +111,7 @@ background-position: 100% 0%
 
 Vimos que todas estas funciones para manipulación de dataframes siguen una 
 estructura similar, cada una se comporta como un "verbo" y es posible 
-conectar estas acciones con un operador llamado "**pipe**" (**%&gt;%**).
+conectar estas acciones con un operador llamado "**pipe**" (**%>%**).
 
 --
 
@@ -149,19 +155,10 @@ background-position: 100% 0%
 
 Un ejemplo: utilizando el siguiente dataframe...
 
-
-```r
-df &lt;- data.frame(x1 = c(1, 2, 3, 4),
+```{r, warning=FALSE}
+df <- data.frame(x1 = c(1, 2, 3, 4),
                  x2 = c("perro", "gato", "caballo", "conejo"))
 print(df)
-```
-
-```
-##   x1      x2
-## 1  1   perro
-## 2  2    gato
-## 3  3 caballo
-## 4  4  conejo
 ```
 
 --
@@ -171,19 +168,15 @@ luego ordenarla de manera descendente según el número de caracteres de x2.
 
 --
 
-
-```r
+```{r}
 library(dplyr)
-df %&gt;%
-  mutate(n = nchar(x2)) %&gt;% # nchar(), función utilizada para contar caracteres
-  filter(n &gt; 5) %&gt;%
-  arrange(desc(n))
-```
+df$x2<-as.character(df$x2)
 
-```
-##   x1      x2 n
-## 1  3 caballo 7
-## 2  4  conejo 6
+df %>%
+  mutate(n = nchar(x2)) %>% # nchar(), función utilizada para contar caracteres
+  filter(n > 5) %>%
+  arrange(desc(n))
+
 ```
 
 ---
@@ -222,10 +215,9 @@ que sexo sea igual a 1 (sexo == 1), y el valor "mujer" en caso contrario.
 
 --
 
-
-```r
+```{r}
 library(readr)
-ene &lt;- read.csv(file = "data/ene-2019-11.csv")
+ene <- read.csv(file = "data/ene-2019-11.csv")
 ```
 
 ---
@@ -238,17 +230,10 @@ background-position: 100% 0%
   
 ## Uso de condicionales: `if_else()`
 
-
-```r
-ene &lt;- ene %&gt;%
+```{r}
+ene <- ene %>%
   mutate(glosa_sexo = if_else(sexo == 1, "hombre", "mujer"))
 table(ene$glosa_sexo)
-```
-
-```
-## 
-## hombre  mujer 
-##  46064  50176
 ```
 
 --
@@ -288,18 +273,17 @@ y "mayores de 30 años".
 
 --
 
-
-```r
+```{r}
 # Ejemplo: método 1
-ene &lt;- ene %&gt;%
+ene <- ene %>%
   mutate(
-    tramos_etarios = if_else(edad &lt; 15,
+    tramos_etarios = if_else(edad < 15,
                              "menores a 15",
                              ""),
     tramos_etarios = if_else(edad %in% 15:30,
                              "entre 15 y 30 años",
                              tramos_etarios),
-    tramos_etarios = if_else(edad &gt; 30,
+    tramos_etarios = if_else(edad > 30,
                              "mayores de 30 años",
                              tramos_etarios)
     )
@@ -307,15 +291,8 @@ ene &lt;- ene %&gt;%
 
 --
 
-
-```r
+```{r}
 table(ene$tramos_etarios, useNA = "always")
-```
-
-```
-## 
-## entre 15 y 30 años mayores de 30 años       menores a 15               &lt;NA&gt; 
-##              21201              56756              18283                  0
 ```
 
 ---
@@ -328,16 +305,15 @@ background-position: 100% 0%
   
 ## Uso de condicionales: `if_else()`
 
-
-```r
+```{r}
 # Ejemplo: método 2
-ene &lt;- ene %&gt;%
+ene <- ene %>%
   mutate(
-    tramos_etarios2 = if_else(edad &lt; 15,
+    tramos_etarios2 = if_else(edad < 15,
                               "menores a 15",
                               if_else(edad %in% 15:30,
                                       "entre 15 y 30 años",
-                                      if_else(edad &gt; 30,
+                                      if_else(edad > 30,
                                               "mayores de 30 años",
                                               "")))
     )
@@ -345,15 +321,8 @@ ene &lt;- ene %&gt;%
 
 --
 
-
-```r
+```{r}
 table(ene$tramos_etarios2, useNA = "always")
-```
-
-```
-## 
-## entre 15 y 30 años mayores de 30 años       menores a 15               &lt;NA&gt; 
-##              21201              56756              18283                  0
 ```
 
 --
@@ -386,28 +355,20 @@ Si, existe la función **`case_when()`**.
 
 Usando **case_when()**, el resultado anterior sería:
 
-
-```r
+```{r}
 # Ejemplo: método 2
-ene &lt;- ene %&gt;%
-  mutate(tramos_etarios3 = case_when(edad &lt; 15 ~ "menores a 15",
+ene <- ene %>%
+  mutate(tramos_etarios3 = case_when(edad < 15 ~ "menores a 15",
                                      edad %in% 15:30 ~ "entre 15 y 30 años",
-                                     edad &gt; 30 ~ "mayores de 30 años",
+                                     edad > 30 ~ "mayores de 30 años",
                                      TRUE ~ "")
     )
 ```
 
 --
 
-
-```r
+```{r}
 table(ene$tramos_etarios3, useNA = "always")
-```
-
-```
-## 
-## entre 15 y 30 años mayores de 30 años       menores a 15               &lt;NA&gt; 
-##              21201              56756              18283                  0
 ```
 
 ---
@@ -424,9 +385,8 @@ La función `case_when()` funciona de la siguiente manera:
 
 --
 
-
-```r
-dataframe %&gt;%
+```{r, eval=F}
+dataframe %>%
   mutate(nv = case_when(cond_1 ~ valor_1,
                         cond_2 ~ valor_2))
 ```
@@ -448,7 +408,7 @@ condición 2.
 "valor_2".
 
 - En caso que cond_1 sea falsa, y cond_2 sea falsa, se asignará un valor 
-"missing" a "nv".
+"missing" (`NA`) a "nv".
 
 ---
 
@@ -478,6 +438,10 @@ y el valor a asignar.
 
 - Los valores a asignar deben ser de la misma clase.
 
+--
+
+¿Como se hace esa "colita de chancho"? `AltGr` + `+` = `~`
+
 ---
 
 background-image: url("imagenes/fondo2.PNG")
@@ -488,7 +452,9 @@ background-position: 100% 0%
   
 ## Uso de condicionales: `case_when()`
 
-Un pequeño ejercicio: utilizando la base de la ene, genere las siguientes 
+Un pequeño ejercicio: 
+
+Utilizando la base de la ene (la misma de la sesión anterior), genere las siguientes dos
 variables, siguiendo el orden de las instrucciones:
 
 - **tramos1**: asígnele el valor 1 si la edad es menor que 15, el valor 2 si 
@@ -510,42 +476,27 @@ background-position: 100% 0%
   
 ## Uso de condicionales: `case_when()`
 
-
-```r
-ene &lt;- ene %&gt;%
-  mutate(tramos1 = case_when(edad &lt; 15 ~ 1,
-                             edad &lt; 31 ~ 2,
-                             edad &gt; 30 ~ 3),
-         tramos2 = case_when(edad &lt; 31 ~ 1,
-                             edad &lt; 15 ~ 2,
-                             edad &gt; 30 ~ 3)
+```{r}
+ene <- ene %>%
+  mutate(tramos1 = case_when(edad < 15 ~ 1,
+                             edad < 31 ~ 2,
+                             edad > 30 ~ 3),
+         tramos2 = case_when(edad < 31 ~ 1,
+                             edad < 15 ~ 2,
+                             edad > 30 ~ 3)
     )
 ```
 
 --
 
-
-```r
+```{r}
 table(ene$tramos1, useNA = "always")
-```
-
-```
-## 
-##     1     2     3  &lt;NA&gt; 
-## 18283 21201 56756     0
 ```
 
 --
 
-
-```r
+```{r}
 table(ene$tramos2, useNA = "always")
-```
-
-```
-## 
-##     1     3  &lt;NA&gt; 
-## 39484 56756     0
 ```
 
 ---
@@ -554,7 +505,7 @@ background-image: url("imagenes/group_by_ungroup.png")
 background-size: 100% 100%
 class: center, bottom, inverse
 
-# &lt;font color = "blue"&gt;Agrupación de unidades&lt;/font&gt;
+# <font color = "blue">Agrupación de unidades</font>
 
 ---
 
@@ -639,26 +590,47 @@ Ejemplo: obtener el número de registros de hombres y el de mujeres.
 
 --
 
+```{r}
 
-```r
-ene &lt;- ene %&gt;%
-  group_by(sexo) %&gt;%
-  mutate(n_sexo = n())
+## Como resultado
+ene %>%
+  group_by(sexo) %>%
+  count()
+
+```
+
+
+---
+
+background-image: url("imagenes/fondo2.PNG")
+background-size: contain;
+background-position: 100% 0%
+
+# Transformación de datos (2)
+
+--
+
+Lo anterior es como haber aplicado un `table()`
+
+```{r}
+table(ene$sexo,useNA = "ifany")
+```
+Pero nos puede interesar crear una nueva variable a partir del agrupamiento. Por ejemplo:
+
+```{r}
+ene<-ene %>%
+  group_by(sexo) %>%
+  mutate(n_sexo=n())
 ```
 
 --
 
+Se crea una variable con dos valores: **46064** para todas las mujeres y **50176** para todos los hombres.
 
-```r
-table(ene$sexo, useNA = "always")
-```
+--
 
-```
-## 
-##     1     2  &lt;NA&gt; 
-## 46064 50176     0
-```
-
+El resultado lo podemos ver a continuación...
+ 
 ---
 
 background-image: url("imagenes/fondo2.PNG")
@@ -671,38 +643,16 @@ background-position: 100% 0%
 
 Número de hombres
 
-
-```r
-head(ene %&gt;% filter(sexo == 1) %&gt;% select(idrph, sexo, n_sexo), n = 3)
-```
-
-```
-## # A tibble: 3 x 3
-## # Groups:   sexo [1]
-##     idrph  sexo n_sexo
-##     &lt;int&gt; &lt;int&gt;  &lt;int&gt;
-## 1  808409     1  46064
-## 2 1100843     1  46064
-## 3 1100862     1  46064
+```{r}
+ene %>% filter(sexo == 1) %>% select(idrph, sexo, n_sexo) %>% head(3)
 ```
 
 --
 
 Número de mujeres
 
-
-```r
-head(ene %&gt;% filter(sexo == 2) %&gt;% select(idrph, sexo, n_sexo), n = 3)
-```
-
-```
-## # A tibble: 3 x 3
-## # Groups:   sexo [1]
-##     idrph  sexo n_sexo
-##     &lt;int&gt; &lt;int&gt;  &lt;int&gt;
-## 1  808410     2  50176
-## 2 1100844     2  50176
-## 3 1100849     2  50176
+```{r}
+ene %>% filter(sexo == 2) %>% select(idrph, sexo, n_sexo) %>% head(3)
 ```
 
 ---
@@ -724,24 +674,15 @@ todos los tiempos
 
 --
 
-
-```r
+```{r}
 library(guaguas)
-head(
-guaguas %&gt;%
-  group_by(nombre) %&gt;%
-  mutate(total = sum(n)) %&gt;%
-  arrange(desc(total)),
-n = 1
-)
-```
+guaguas %>%
+  group_by(nombre) %>%
+  mutate(total = sum(n)) %>%
+  arrange(desc(total)) %>% 
+  head(1) %>% 
+  select(sexo,nombre,total)
 
-```
-## # A tibble: 1 x 6
-## # Groups:   nombre [1]
-##    anio sexo  nombre     n proporcion  total
-##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;  &lt;int&gt;
-## 1  1920 F     María   2128      0.105 959108
 ```
 
 ---
@@ -753,11 +694,6 @@ background-position: 100% 0%
 # Transformación de datos (2)
 
 ## Agrupación de unidades
-
-Si queremos realizar una agrupación posterior a una agrupación previa, es 
-necesario "desagrupar" la agrupación previa, esto se realiza con `ungroup()`.
-
---
 
 - Función auxiliar **`slice()`**
 
@@ -785,32 +721,13 @@ background-position: 100% 0%
 
 ## Agrupación de unidades
 
-
-```r
+```{r}
 # Ejemplo: utilizando la base guaguas, obtener el nombre más repetido por año.
-guaguas %&gt;%
-  group_by(anio) %&gt;%
-  arrange(desc(n)) %&gt;%
-  slice(1) %&gt;%
-  arrange(desc(anio))
-```
-
-```
-## # A tibble: 100 x 5
-## # Groups:   anio [100]
-##     anio sexo  nombre       n proporcion
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;      &lt;dbl&gt;
-##  1  2019 M     Mateo     4152     0.0183
-##  2  2018 M     Mateo     4468     0.0185
-##  3  2017 M     Mateo     4736     0.0199
-##  4  2016 M     Agustín   4300     0.0174
-##  5  2015 M     Agustín   5355     0.0206
-##  6  2014 M     Agustín   5903     0.0222
-##  7  2013 M     Agustín   6518     0.0255
-##  8  2012 M     Agustín   6346     0.0250
-##  9  2011 M     Benjamín  5471     0.0212
-## 10  2010 M     Benjamín  6021     0.0229
-## # ... with 90 more rows
+guaguas %>%   ## La base de datos
+  arrange(desc(n)) %>%  ## Ordenamos la base de mayor a menor
+    group_by(anio) %>%  ## Agrupamos por año
+     slice(1) %>% ## Dentro de cada año, tomamos el primer registro
+  arrange(desc(anio)) ## El resultado se ordena desde el año más reciente.
 ```
 
 ---
@@ -838,7 +755,7 @@ En combinación con otras funciones, es una manera de tabular información.
 --
 
 .center[
-&lt;img src="imagenes/group.png" width="400" /&gt;
+<img src="imagenes/group.png" width="400" />
 ]
 
 ---
@@ -876,33 +793,10 @@ background-position: 100% 0%
 
 ## Cuadros de resumen
 
-
-```r
-ene %&gt;%
-  group_by(region) %&gt;%
+```{r}
+ene %>%
+  group_by(region) %>%
   summarise(n = n(), promedio = mean(edad), mediana = median(edad))
-```
-
-```
-## # A tibble: 16 x 4
-##    region     n promedio mediana
-##     &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;
-##  1      1  3076     35.3      33
-##  2      2  3290     35.9      34
-##  3      3  2840     35.2      33
-##  4      4  5806     38.7      38
-##  5      5 12417     40.1      40
-##  6      6  5667     39.7      40
-##  7      7  6479     40.4      42
-##  8      8  9802     39.8      41
-##  9      9  5176     39.4      39
-## 10     10  7417     39.7      41
-## 11     11  2806     36.1      35
-## 12     12  2145     39.9      40
-## 13     13 19551     38.1      37
-## 14     14  3479     40.0      41
-## 15     15  3476     35.5      33
-## 16     16  2813     39.6      39
 ```
 
 ---
@@ -921,29 +815,11 @@ Un pequeño ejercicio: construir un cuadro de resumen que incluya lo siguiente:
 
 --
 
-
-```r
-ene %&gt;%
-  filter(region == 6) %&gt;%
-  group_by(b1) %&gt;%
+```{r}
+ene %>%
+  filter(region == 6) %>%
+  group_by(b1) %>%
   summarise(n = n())
-```
-
-```
-## # A tibble: 11 x 2
-##       b1     n
-##    &lt;int&gt; &lt;int&gt;
-##  1     1    41
-##  2     2   226
-##  3     3   246
-##  4     4    95
-##  5     5   498
-##  6     6   111
-##  7     7   285
-##  8     8   208
-##  9     9   838
-## 10    10     2
-## 11    NA  3117
 ```
 
 ---
@@ -1010,7 +886,7 @@ que cuenta con funciones para trabajar con **tidy data**.
 --
 
 .center[
-&lt;img src="imagenes/tidyr.png" width="200" /&gt;
+<img src="imagenes/tidyr.png" width="200" />
 ]
 
 ---
@@ -1038,7 +914,7 @@ Equivale a transponer un dataframe a formato vertical.
 
 .pull-right[
 
-&lt;img src="imagenes/wide-long.png" width="250" /&gt;
+<img src="imagenes/wide-long.png" width="250" />
 
 ]
 
@@ -1069,12 +945,11 @@ Por ejemplo...
 
 --
 
-
-```r
+```{r, eval=F}
 library(tidyr)
-ene %&gt;%
-  group_by(region, b1) %&gt;%
-  summarise(n = n()) %&gt;%
+ene %>%
+  group_by(region, b1) %>%
+  summarise(n = n()) %>%
   pivot_wider(names_from = b1,
               names_prefix = "x" ,
               values_from = n)
@@ -1090,28 +965,12 @@ background-position: 100% 0%
 
 ## Función `pivot_wider()`
 
-
-```
-## # A tibble: 16 x 12
-## # Groups:   region [16]
-##    region    x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   xNA
-##     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-##  1      1    42   143   168    97   327    48   191   130   172    29  1729
-##  2      2    46   204   206    89   313     9   223   201   189     1  1809
-##  3      3    24   114   184    64   312    26   164   142   220    NA  1590
-##  4      4    37   196   245    69   602   196   292   222   687     1  3259
-##  5      5   125   663   720   216  1232   180   675   459  1118    32  6997
-##  6      6    41   226   246    95   498   111   285   208   838     2  3117
-##  7      7    35   205   252    96   605   190   340   243   974     4  3535
-##  8      8    61   433   479   171   890   150   552   338   838    16  5874
-##  9      9    38   237   220    60   445   293   268   136   489     7  2983
-## 10     10    60   285   273   163   619   376   413   256   809    23  4140
-## 11     11    37   158   184    51   314    95   206   106   279    11  1365
-## 12     12    71   163   161    62   211    33   135    89   133    43  1044
-## 13     13   409  1432  1230   522  1957   124  1032   680  1658    16 10491
-## 14     14    23   187   155    47   296   165   208   137   377     5  1879
-## 15     15    30   154   140    83   355   138   136   129   338    13  1960
-## 16     16    20   144   131    30   239    69   174    91   302     1  1612
+```{r, echo=F}
+library(tidyr)
+ene %>%
+  group_by(region, b1) %>%
+  summarise(n = n()) %>%
+  pivot_wider(names_from = b1, names_prefix = "x" , values_from = n)
 ```
 
 ---
@@ -1141,16 +1000,14 @@ Ejemplo de `pivot_longer()`:
 
 --
 
-
-```r
-df1 &lt;- data.frame(region = c(1, 2),
+```{r}
+df1 <- data.frame(region = c(1, 2),
                   hombres = c(100, 200),
                   mujeres = c(50, 300))
 ```
 
-
-```r
-df1 %&gt;%
+```{r,eval=F}
+df1 %>%
   pivot_longer(cols = -region , names_to = "sexo", values_to = "total_sexo")
 ```
 
@@ -1164,15 +1021,9 @@ background-position: 100% 0%
 
 ## Función `pivot_longer()`
 
-
-```
-## # A tibble: 4 x 3
-##   region sexo    total_sexo
-##    &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
-## 1      1 hombres        100
-## 2      1 mujeres         50
-## 3      2 hombres        200
-## 4      2 mujeres        300
+```{r,echo=F}
+df1 %>%
+  pivot_longer(cols = -region , names_to = "sexo", values_to = "total_sexo")
 ```
 
 Los argumentos más comunes de esta función son:
@@ -1222,32 +1073,13 @@ background-position: 100% 0%
 
 ## Pequeño ejercicio
 
-
-```r
-ene %&gt;%
-  group_by(b1, mes_encuesta) %&gt;%
-  summarise(n = n()) %&gt;%
+```{r}
+ene %>%
+  group_by(b1, mes_encuesta) %>%
+  summarise(n = n()) %>%
   pivot_wider(names_from = mes_encuesta,
               names_prefix = "mes_",
               values_from = n)
-```
-
-```
-## # A tibble: 11 x 4
-## # Groups:   b1 [11]
-##       b1 mes_10 mes_11 mes_12
-##    &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
-##  1     1    314    374    411
-##  2     2   1359   1752   1833
-##  3     3   1442   1743   1809
-##  4     4    580    649    686
-##  5     5   2787   3113   3315
-##  6     6    714    770    719
-##  7     7   1683   1788   1823
-##  8     8    993   1280   1294
-##  9     9   2663   3246   3512
-## 10    10     53     67     84
-## 11    NA  15990  18478  18916
 ```
 
 ---
@@ -1342,24 +1174,14 @@ background-position: 100% 0%
 Ejemplo 1: utilizando la base de guaguas, obtener los tres nombres más 
 repetidos cuyo nombre comience con la letra z.
 
-
-```r
+```{r}
 library(stringr)
-guaguas %&gt;%
-  filter(str_detect(nombre, "^Z")) %&gt;%
-  group_by(nombre) %&gt;%
-  summarise(total = sum(n)) %&gt;%
-  arrange(desc(total)) %&gt;%
+guaguas %>%
+  filter(str_detect(nombre, "^Z")) %>%
+  group_by(nombre) %>%
+  summarise(total = sum(n)) %>%
+  arrange(desc(total)) %>%
   slice(1:3)
-```
-
-```
-## # A tibble: 3 x 2
-##   nombre  total
-##   &lt;chr&gt;   &lt;int&gt;
-## 1 Zoila    7204
-## 2 Zunilda  7028
-## 3 Zulema   6248
 ```
 
 --
@@ -1383,28 +1205,13 @@ background-position: 100% 0%
 Ejemplo 2: utilizando la base de guaguas, obtener los nombres que comiencen 
 con la letra "I" y terminen con la letra "o".
 
-
-```r
+```{r}
 library(stringr)
-guaguas %&gt;%
-  filter(str_detect(nombre, "^I.*o$")) %&gt;%
-  group_by(nombre) %&gt;%
-  summarise(total = sum(n)) %&gt;%
+guaguas %>%
+  filter(str_detect(nombre, "^I.*o$")) %>%
+  group_by(nombre) %>%
+  summarise(total = sum(n)) %>%
   arrange(desc(total))
-```
-
-```
-## # A tibble: 8 x 2
-##   nombre    total
-##   &lt;chr&gt;     &lt;int&gt;
-## 1 Ignacio   66672
-## 2 Isidro     1949
-## 3 Isidoro    1550
-## 4 Ivo        1090
-## 5 Italo       399
-## 6 Iñigo       287
-## 7 Ildefonso    83
-## 8 Irenio       16
 ```
 
 ---
@@ -1425,22 +1232,13 @@ La función `str_detect()` también se puede usar con `case_when()`.
 
 - Obtenga el número de nombres que terminan con a y cuantos que no.
 
-
-```r
-guaguas %&gt;%
-  filter(sexo == "F" &amp; anio == 1990) %&gt;%
+```{r}
+guaguas %>%
+  filter(sexo == "F" & anio == 1990) %>%
   mutate(termina_a = case_when(str_detect(nombre, "a$") ~ 1,
-                               TRUE ~ 0)) %&gt;%
-  group_by(termina_a) %&gt;%
+                               TRUE ~ 0)) %>%
+  group_by(termina_a) %>%
   summarise(n = n())
-```
-
-```
-## # A tibble: 2 x 2
-##   termina_a     n
-##       &lt;dbl&gt; &lt;int&gt;
-## 1         0   321
-## 2         1   341
 ```
 
 ---
@@ -1485,8 +1283,7 @@ la variable **pet** y el total de la variable **ocu**.
 que tomará el valor de: total de ocu / total de pet * 100
 
 (De esta forma se obtiene la tasa de ocupación, pero no será equivalente a 
-la oficial pues no se están considerando los factores de expansión.)
-
+la oficial pues no se están considerando los factores de expansión.).
 ---
 
 background-image: url("imagenes/fondo2.PNG")
@@ -1519,135 +1316,10 @@ class: center, middle
 .linea-superior[]
 .linea-inferior[]
 
-&lt;img src="imagenes/logo_portada2.png" width="200" /&gt;
+<img src="imagenes/logo_portada2.png" width="200" />
 
-## Capacitación en R y herramientas de productividad
-
-## Proyecto Estratégico Servicios Compartidos para la Producción Estadística
+## Capacitación en R
 
 ## Procesamiento de bases de datos (2)
 
-### Noviembre 2020
-    </textarea>
-<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script>var slideshow = remark.create({
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false
-});
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
-  window.dispatchEvent(new Event('resize'));
-});
-(function(d) {
-  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
-  if (!r) return;
-  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
-  d.head.appendChild(s);
-})(document);
-
-(function(d) {
-  var el = d.getElementsByClassName("remark-slides-area");
-  if (!el) return;
-  var slide, slides = slideshow.getSlides(), els = el[0].children;
-  for (var i = 1; i < slides.length; i++) {
-    slide = slides[i];
-    if (slide.properties.continued === "true" || slide.properties.count === "false") {
-      els[i - 1].className += ' has-continuation';
-    }
-  }
-  var s = d.createElement("style");
-  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
-  d.head.appendChild(s);
-})(document);
-// delete the temporary CSS (for displaying all slides initially) when the user
-// starts to view slides
-(function() {
-  var deleted = false;
-  slideshow.on('beforeShowSlide', function(slide) {
-    if (deleted) return;
-    var sheets = document.styleSheets, node;
-    for (var i = 0; i < sheets.length; i++) {
-      node = sheets[i].ownerNode;
-      if (node.dataset["target"] !== "print-only") continue;
-      node.parentNode.removeChild(node);
-    }
-    deleted = true;
-  });
-})();
-(function() {
-  "use strict"
-  // Replace <script> tags in slides area to make them executable
-  var scripts = document.querySelectorAll(
-    '.remark-slides-area .remark-slide-container script'
-  );
-  if (!scripts.length) return;
-  for (var i = 0; i < scripts.length; i++) {
-    var s = document.createElement('script');
-    var code = document.createTextNode(scripts[i].textContent);
-    s.appendChild(code);
-    var scriptAttrs = scripts[i].attributes;
-    for (var j = 0; j < scriptAttrs.length; j++) {
-      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
-    }
-    scripts[i].parentElement.replaceChild(s, scripts[i]);
-  }
-})();
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
-
-<script>
-slideshow._releaseMath = function(el) {
-  var i, text, code, codes = el.getElementsByTagName('code');
-  for (i = 0; i < codes.length;) {
-    code = codes[i];
-    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
-      text = code.textContent;
-      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
-          /^\$\$(.|\s)+\$\$$/.test(text) ||
-          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
-        code.outerHTML = code.innerHTML;  // remove <code></code>
-        continue;
-      }
-    }
-    i++;
-  }
-};
-slideshow._releaseMath(document);
-</script>
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-(function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
-  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
-    script.src  = script.src.replace(/^https?:/, '');
-  document.getElementsByTagName('head')[0].appendChild(script);
-})();
-</script>
-  </body>
-</html>
+### Diciembre 2020
