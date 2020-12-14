@@ -4,7 +4,7 @@
     <title>Capacitación en R</title>
     <meta charset="utf-8" />
     <meta name="author" content="" />
-    <meta name="date" content="2020-12-10" />
+    <meta name="date" content="2020-12-14" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -172,13 +172,6 @@ luego ordenarla de manera descendente según el número de caracteres de x2.
 
 ```r
 library(dplyr)
-```
-
-```
-## Warning: package 'dplyr' was built under R version 3.6.3
-```
-
-```r
 df$x2&lt;-as.character(df$x2)
 
 df %&gt;%
@@ -777,13 +770,6 @@ todos los tiempos
 
 ```r
 library(guaguas)
-```
-
-```
-## Warning: package 'guaguas' was built under R version 3.6.3
-```
-
-```r
 guaguas %&gt;%
   group_by(nombre) %&gt;%
   mutate(total = sum(n)) %&gt;%
@@ -1493,17 +1479,6 @@ guaguas %&gt;%
 ## 1         0   321
 ## 2         1   341
 ```
-
----
-
-background-image: url("imagenes/fondo2.PNG")
-background-size: contain;
-background-position: 100% 0%
-
-# Ejercicio final
-
-
-...los veremos en R.
 
 ---
 
