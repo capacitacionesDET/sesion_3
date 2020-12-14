@@ -1,0 +1,41 @@
+---
+title: "Ejercicios - Sesión 3"
+author: "Capacitadores R en DET"
+date: "14-12-2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Paso previo
+
+Importar la base [**ene-2019-11.csv**](https://www.ine.cl/docs/default-source/ocupacion-y-desocupacion/bbdd/2019/formato-csv/ene-2019-11.csv?sfvrsn=6f231878_6&download=true). 
+
+Las siguientes tareas realicelas sobre la base ene.
+
+# Ejercicio 1
+Generar un cuadro de resumen que muestre en las filas la categoría de rama de actividad económica (**b14_rev4cl_canes**) y en las columnas los grupos ocupacionales (**b1**).
+
+# Ejercicio 2
+
+Cree las siguientes variables:
+
++ **pet**: que tome valor 1 si edad es mayor o igual a 15, y 0 en otro caso.
+    
++ **ocu**: que tome el valor 1 si la variable cae_especifico se encuentra en el rango (extremos incluidos) entre 1 y 7, y que tome el valor 0 en cualquier otro caso.
+
+# Ejercicio 3
+
+Genere un cuadro de resumen agrupado por región que muestre el total de la variable **pet** y el total de la variable **ocu**.
+
+# Ejercicio 4
+
+Sobre el cuadro de resumen del punto anterior, cree la variable **to**, que tomará el valor de: total de ocu / total de pet * 100
+
+(De esta forma se obtiene la tasa de ocupación, pero no será equivalente a la oficial pues no se están considerando los factores de expansión.).
+
+# Sobre el envío
+
+Enviar a más tardar el día jueves 17 de diciembre a las 17:00. Enviar ejercicios como archivo .R (script) con nombre y apellido de quien hizo la tarea a los correos `nicolas.ratto@ine.cl` y `gonzalo.franetovic@ine.cl`.
